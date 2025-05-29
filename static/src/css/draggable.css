@@ -1,0 +1,19 @@
+.modal-content {
+    resize: both;
+    overflow: auto;
+    max-width: 96vw;
+    max-height: 96vh;
+    min-width: 400px;
+    min-height: 200px;
+}
+.modal-header {
+    cursor: move;
+}
+.modal-dialog {
+    max-width: 96vw;
+    max-height: 96vh;
+    min-width: 400px;
+    min-height: 200px;
+    position: fixed;
+    width: auto;
+}
