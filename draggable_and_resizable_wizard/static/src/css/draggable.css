@@ -7,7 +7,10 @@
     min-height: 200px;
 }
 .modal-header {
-    cursor: move;
+    cursor: grab
+}
+.modal-header:active {
+    cursor: grabbing
 }
 .modal-dialog {
     max-width: 96vw;

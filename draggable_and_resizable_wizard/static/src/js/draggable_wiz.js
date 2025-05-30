@@ -62,6 +62,35 @@ function makeModalDraggableResizable($dlg) {
     });
 
     requestAnimationFrame(centerDialog);
+
+    const MAX_RATIO = 0.9;
+
+    $dlg.find('.modal-header').on('dblclick', function () {
+        const $m = $dlg;
+        if ($m.data('isMax')) {
+            const {l, t, w, h} = $m.data('origSize');
+            $m.animate({ left: l, top: t, width: w, height: h }, 200, () => {
+                $m.data('isMax', false);
+            });
+        } else {
+            $m.data('origSize', {
+                l: $m.position().left,
+                t: $m.position().top,
+                w: $m.outerWidth(),
+                h: $m.outerHeight(),
+            });
+            const vw = $(window).width()  * MAX_RATIO;
+            const vh = $(window).height() * MAX_RATIO;
+            $m.animate({
+                left: ($(window).width()  - vw) / 2,
+                top:  ($(window).height() - vh) / 2,
+                width:  vw,
+                height: vh,
+            }, 200, () => {
+                $m.data('isMax', true);
+            });
+        }
+    });
 }
 
 patch(Dialog.prototype, 'dragable_and_resizable_wizard', {
