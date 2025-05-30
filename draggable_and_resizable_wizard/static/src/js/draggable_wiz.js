@@ -21,23 +21,21 @@ function makeModalDraggableResizable($dlg) {
         });
     };
 
-    const EDGE_PAD = 200;
     $dlg.draggable({
         handle: '.modal-header',
         scroll: false,
         stop: function () {
-            const rect = this.getBoundingClientRect();
+            const { left, top, width, height } = this.getBoundingClientRect();
             const vw = window.innerWidth;
             const vh = window.innerHeight;
 
-            if (
-                rect.left < EDGE_PAD ||
-                rect.right > vw - EDGE_PAD ||
-                rect.top < EDGE_PAD ||
-                rect.bottom > vh - EDGE_PAD
-            ) {
-                const newLeft = (vw - rect.width) / 2;
-                const newTop = (vh - rect.height) / 2;
+            const overflow =
+                left < 0 || top < 0 ||
+                left + width > vw || top + height > vh;
+
+            if (overflow) {
+                const newLeft = (vw - width) / 2;
+                const newTop = (vh - height) / 2;
                 $(this).animate({ left: newLeft, top: newTop }, 200);
             }
         },
