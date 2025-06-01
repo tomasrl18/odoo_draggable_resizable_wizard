@@ -5,6 +5,7 @@
     max-height: 96vh;
     min-width: 400px;
     min-height: 200px;
+    border-radius: 10px !important;
 }
 .modal-header {
     cursor: grab
