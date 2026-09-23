@@ -1,23 +1,27 @@
-.modal-content {
-    resize: both;
-    overflow: auto;
+/*
+ * Draggable & Resizable Wizard
+ *
+ * The drag/resize behavior itself is applied per dialog by
+ * draggable_wiz.js (jQuery UI). These rules only prepare the modal
+ * styling: size limits, scrollable content and grab cursors.
+ */
+
+.modal-dialog {
+    min-width: min(400px, 96vw);
+    min-height: min(200px, 96vh);
     max-width: 96vw;
     max-height: 96vh;
-    min-width: 400px;
-    min-height: 200px;
+}
+
+.modal-content {
+    overflow: auto;
     border-radius: 10px !important;
 }
+
 .modal-header {
-    cursor: grab
+    cursor: grab;
 }
+
 .modal-header:active {
-    cursor: grabbing
-}
-.modal-dialog {
-    max-width: 96vw;
-    max-height: 96vh;
-    min-width: 400px;
-    min-height: 200px;
-    position: fixed;
-    width: auto;
+    cursor: grabbing;
 }

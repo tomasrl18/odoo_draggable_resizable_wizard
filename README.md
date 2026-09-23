@@ -9,9 +9,11 @@ Make every wizard dialog in the Odoo backend **draggable** and **resizable**, so
 ## Features
 
 - **Draggable wizards** — move any Odoo dialog anywhere within the browser window (drag by the modal header).
-- **Resizable wizards** — adjust the width and height of dialogs using the native browser resize handle (bottom-right corner).
+- **Resizable wizards** — adjust the width and height of dialogs from any edge or corner.
+- **Maximize / restore** — double-click the dialog header to maximize it (90% of the viewport) and double-click again to restore.
 - **Seamless integration** — no configuration required; works out of the box for all wizards.
-- **Smart bounds** — dialogs stay within the viewport (max 96vw/96vh, min 400×200px) and are re-centered on load.
+- **Smart bounds** — dialogs stay within the viewport (max 96vw/96vh, min 400×200px, scaled down on narrow screens) and are clamped to the viewport edges when dragged or resized.
+- **Clean lifecycle** — all event listeners and jQuery UI state are removed when a dialog closes (no memory leaks).
 
 ## Compatibility
 
@@ -29,14 +31,15 @@ Make every wizard dialog in the Odoo backend **draggable** and **resizable**, so
 Once installed, simply open any wizard in the Odoo backend:
 
 - **Drag** the dialog by its header to reposition it.
-- **Resize** it using the resize handle at the bottom-right corner of the dialog content.
+- **Resize** it from any edge or corner.
+- **Double-click** the header to maximize/restore the dialog.
 
 ## How It Works
 
-The module patches the OWL `Dialog` component from `@web/core/dialog/dialog`:
+The module patches the OWL `Dialog` component from `@web/core/dialog/dialog` (and also handles legacy Bootstrap modals via `shown.bs.modal` / `hidden.bs.modal`):
 
-- `static/src/js/draggable_wiz.js` — on mount, each modal is made `position: fixed`, centered, and given jQuery `draggable()` behavior (with the modal header as the drag handle). The `stop` callback keeps the dialog inside the viewport.
-- `static/src/css/draggable.css` — enables `resize: both` on `.modal-content`, sets min/max size constraints, rounded corners, and grab/grabbing cursors on the header.
+- `static/src/js/draggable_wiz.js` — on mount, each modal is made `position: fixed`, centered, and given jQuery UI `draggable()` (modal header as handle) and `resizable()` (all edges/corners) behavior. Positions are clamped to the viewport after drag/resize, a debounced window-resize handler updates the max size, and a cleanup routine (run on `onWillDestroy` / `hidden.bs.modal`) removes all listeners and destroys the jQuery UI state. Double-clicking the header maximizes/restores the dialog.
+- `static/src/css/draggable.css` — sets min/max size constraints (responsive via `min()`), scrollable content, rounded corners, and grab/grabbing cursors on the header.
 
 Both assets are loaded into `web.assets_backend`.
 
