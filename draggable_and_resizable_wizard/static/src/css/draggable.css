@@ -14,6 +14,7 @@
 }
 
 .modal-content {
+    resize: both;
     overflow: auto;
     border-radius: 10px !important;
 }

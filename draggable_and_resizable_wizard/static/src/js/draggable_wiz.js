@@ -4,8 +4,6 @@ import { patch } from "@web/core/utils/patch";
 import { Dialog } from "@web/core/dialog/dialog";
 import { onMounted, onWillDestroy } from "@ owl";
 
-const MIN_WIDTH = 400;
-const MIN_HEIGHT = 200;
 const VIEWPORT_RATIO = 0.96;
 const MAXIMIZE_RATIO = 0.9;
 const ANIMATION_MS = 200;
@@ -50,10 +48,10 @@ function cleanupModal($dlg) {
 }
 
 /**
- * Make a `.modal-dialog` element draggable (by its header) and resizable
- * (on all edges/corners). A cleanup function is stored in the element's
- * data so all listeners and jQuery UI state are removed when the dialog
- * closes.
+ * Make a `.modal-dialog` element draggable (by its header). Resizing is
+ * handled natively by the CSS `resize: both` grip on `.modal-content`.
+ * A cleanup function is stored in the element's data so all listeners
+ * are removed when the dialog closes.
  */
 function makeModalDraggableResizable($dlg) {
     if ($dlg.data('drw-initialized')) {
@@ -63,37 +61,18 @@ function makeModalDraggableResizable($dlg) {
 
     $dlg.css({ position: 'fixed', margin: 0, transform: 'none' });
 
-    const { width: vw0, height: vh0 } = viewportSize();
-
-    $dlg
-        .draggable({
-            handle: '.modal-header',
-            scroll: false,
-            stop: function () {
-                clampToViewport($(this));
-            },
-        })
-        .resizable({
-            handles: 'n, e, s, w, ne, se, sw, nw',
-            alsoResize: $dlg.find('.modal-content'),
-            minWidth: Math.min(MIN_WIDTH, vw0 * VIEWPORT_RATIO),
-            minHeight: Math.min(MIN_HEIGHT, vh0 * VIEWPORT_RATIO),
-            maxWidth: vw0 * VIEWPORT_RATIO,
-            maxHeight: vh0 * VIEWPORT_RATIO,
-            stop: function () {
-                clampToViewport($(this));
-            },
-        });
+    $dlg.draggable({
+        handle: '.modal-header',
+        scroll: false,
+        stop: function () {
+            clampToViewport($(this));
+        },
+    });
 
     let resizeTimer;
     const onWindowResize = () => {
         clearTimeout(resizeTimer);
         resizeTimer = setTimeout(() => {
-            const { width: vw, height: vh } = viewportSize();
-            $dlg.resizable('option', {
-                maxWidth: vw * VIEWPORT_RATIO,
-                maxHeight: vh * VIEWPORT_RATIO,
-            });
             clampToViewport($dlg);
         }, RESIZE_DEBOUNCE_MS);
     };
@@ -146,9 +125,6 @@ function makeModalDraggableResizable($dlg) {
         $dlg.find('.modal-header').off('dblclick.drag_resize');
         if ($dlg.hasClass('ui-draggable')) {
             $dlg.draggable('destroy');
-        }
-        if ($dlg.hasClass('ui-resizable')) {
-            $dlg.resizable('destroy');
         }
         $dlg.removeData('drw-initialized');
     });
